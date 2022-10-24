@@ -1,0 +1,281 @@
+---
+title: "ev02"
+author: "Marco Ivan A01662421"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+### Trabajar con las secuencias de coronavirus de otras especies que son similares a SARS- Cov-2 para tratar de explicar el fenómeno de zoonosis del virus.Incluye 20 especies reportadas.
+```{r}
+library("seqinr")
+library(datasets)
+library(ape)
+library(phytools)
+library(Biostrings)
+library(seqinr)
+library(adegenet)
+library(ape)
+library(ggtree)
+library(DECIPHER)
+library(viridis)
+library(ggplot2)
+setwd("C:/Users/HP/Downloads/Analisis de Biología Computacional/Evidencia 2")
+
+
+gato <- read.fasta("gato.fasta")
+gatoBengala <- read.fasta("gatoBengala.fasta")
+gorilla <- read.fasta("gorilla.fasta")
+hamster <- read.fasta("hamster.fasta")
+hamsterDorado <- read.fasta("hamsterD.fasta")
+hiena <- read.fasta("hiena.fasta")
+hipopotamo <- read.fasta("hipopotamo.fasta")
+huron <- read.fasta("huron.fasta")
+leon <- read.fasta("leon.fasta")
+leonAsiatico <- read.fasta("leonA.fasta")
+monoVerde <- read.fasta("monoVerde.fasta")
+nutria <- read.fasta("nutria.fasta")
+perro <- read.fasta("perro.fasta")
+raton <- read.fasta("raton.fasta")
+tigre <- read.fasta("tigre.fasta")  
+tigreMalayo <- read.fasta("tigreM.fasta")
+turon <- read.fasta("turon.fasta")
+venado <- read.fasta("venado.fasta")
+visonAmericano <- read.fasta("visonA.fasta")
+visonEuropeo <- read.fasta("visonE.fasta")
+
+```
+## Longitud de las secuencias 
+
+Gato : 
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(gato[[1]])))
+```
+Gato de Bengala:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(gatoBengala[[1]])))
+```
+
+Gorilla
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(gorilla[[1]])))
+```
+
+hamster
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(hamster[[1]])))
+```
+
+Hamster Dorado:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(hamsterDorado[[1]])))
+```
+
+Hiena: 
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(hiena[[1]])))
+```
+
+Hipopotamo:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(hipopotamo[[1]])))
+```
+
+Huron: 
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(huron[[1]])))
+```
+
+Leon
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(leon[[1]])))
+```
+
+Leon Asiatico
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(leonAsiatico[[1]])))
+```
+
+Mono Verde:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(monoVerde[[1]])))
+```
+
+Nutria:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(nutria[[1]])))
+```
+
+Perro: 
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(perro[[1]])))
+```
+
+Ratón: 
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(raton[[1]])))
+```
+
+Tigre
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(tigre[[1]])))
+```
+
+Tigre Malayo:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(tigreMalayo[[1]])))
+```
+
+Turon:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(turon[[1]])))
+```
+
+Venado:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(venado[[1]])))
+```
+
+Vison Americano:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(visonAmericano[[1]])))
+```
+
+Vison Europeo:
+```{r}
+print(paste0("El tamaño de la secuencia es de: ",length(visonEuropeo[[1]])))
+```
+## Grafica de las bases de ADN que componen las secuencias del virus
+
+```{r}
+library(ggplot2)
+
+sgato <- count(gato[[1]], 1)
+sgatoB <- count(gatoBengala[[1]], 1)
+sgorilla <- count(gorilla[[1]], 1)
+shamster <- count(hamster[[1]], 1)
+shamsterD <- count(hamsterDorado[[1]], 1)
+shiena <- count(hiena[[1]], 1)
+shipopotamo <- count(hipopotamo[[1]], 1)
+shuron <- count(huron[[1]], 1)
+sleon <- count(leon[[1]], 1)
+sleonA <- count(leonAsiatico[[1]], 1)
+smonoV <- count(monoVerde[[1]], 1)
+snutria <- count(nutria[[1]], 1)
+sperro <- count(perro[[1]], 1)
+sraton <- count(raton[[1]], 1)
+stigre <- count(tigre[[1]], 1)
+stigreM <- count(tigreMalayo[[1]], 1)
+sturon <- count(turon[[1]], 1)
+svenado <- count(venado[[1]], 1)
+svisonA <- count(visonAmericano[[1]], 1)
+svisonE <- count(visonEuropeo[[1]], 1)
+
+animals = c("Gato","GatoBengala","Gorilla","Hamster","HamsterDorado","Hiena","Hipopotamo","Huron","Leon","LeonA","MonoV","Nutria","Perro","Raton","Tigre","TigreM","Turon","Venado","VisonA","VisonE")
+D <- data.frame(adenine = c(sgato[1], sgatoB[1],sgorilla[1],shamster[1],shamsterD[1],shiena[1],shipopotamo[1], shuron[1],sleon[1],sleonA[1],smonoV[1],snutria[1],sperro[1],sraton[1],stigre[1],stigreM[1],sturon[1],svenado[1],svisonA[1],svisonE[1]),cytocine =c(sgato[2], sgatoB[2],sgorilla[2],shamster[2],shamsterD[2],shiena[2],shipopotamo[2], shuron[2],sleon[2],sleonA[2],smonoV[2],snutria[2],sperro[2],sraton[2],stigre[2],stigreM[2],sturon[2],svenado[2],svisonA[2],svisonE[2]),guanine = c(sgato[3], sgatoB[3],sgorilla[3],shamster[3],shamsterD[3],shiena[3],shipopotamo[3], shuron[3],sleon[3],sleonA[3],smonoV[3],snutria[3],sperro[3],sraton[3],stigre[3],stigreM[3],sturon[3],svenado[3],svisonA[3],svisonE[3]) ,thyimine = c(sgato[4], sgatoB[4],sgorilla[4],shamster[4],shamsterD[4],shiena[4],shipopotamo[4], shuron[4],sleon[4],sleonA[4],smonoV[4],snutria[4],sperro[4],sraton[4],stigre[4],stigreM[4],sturon[4],svenado[4],svisonA[4],svisonE[4]))
+
+
+colors = c("yellow","red","blue","green","purple","brown","black","orange","grey","pink","cyan","magenta","salmon","turquoise","tan","wheat","maroon","orchid","dark green","navy")
+
+barplot(matrix(c(D$adenine,D$cytocine,D$guanine,D$thyimine), nrow = 20), main = "Bases de ADN que contienen las secuencias del virus Sars Cov-2 en animales", col = colors, beside = T,names.arg = c("Adenine","Cytocine","Guanine","Thyimine")) 
+
+legend("topright", legend= animals, col = colors ,pt.cex = 1,pch = 15,cex = 1,inset = c(-0.2,0))
+```
+
+Amarillo:Gato,
+Rojo: Gato de Bengala,
+Azul: Gorilla,
+Verde: Hamster,
+Morado: Hamster Dorado,
+Cafe: Hiena,
+Negro: Hipopotamo,
+Naranja: Huron,
+Gris: Leon,
+Rosa: Leon Asiatico,
+Cyan: Mono Verde,
+Magenta: Nutria,
+Salmon: Perro,
+Turquesa: Ratón,
+Bronce: Tigre,
+Trigo: Tigre Malayo,
+Marron: Turon,
+Orquidea: Venado,
+Verde Oscuro: Vison Americano,
+Azul marino: Vison Europeo,
+
+
+## Analisis Jerarquico
+
+Información de las secuencias de NCBI
+```{r}
+sarscov <- c("ON380661","OL752440","OL752441","OM475741","MT835139","OM181951","MZ433206","OM181948","OL752444","MW477798","ON248600","OM062573","MZ305031","OL752442","OL913103","OM912903","OM758316","MW562251")
+
+virus_sequences <- read.GenBank(sarscov)
+str(virus_sequences)
+attributes(virus_sequences)
+names(virus_sequences)
+attr(virus_sequences, "species")
+```
+Archivo de todas las secuencias:
+
+```{r}
+write.dna(virus_sequences,  
+          file ="virus_seqs.fasta", 
+          format = "fasta", 
+          append = FALSE, 
+          nbcol = 6, 
+          colsep = " ", 
+          colw = 10)
+
+
+virus_seq_not_align <- readDNAStringSet("virus_seqs.fasta", format = "fasta")
+virus_seq_not_align
+```
+## Alineamiento de las secuencias:
+#### Las sombras más oscuras de gris significan una mayor distancia
+```{r}
+virus_seq_not_align <- OrientNucleotides(virus_seq_not_align)
+
+virus_seq_align <- AlignSeqs(virus_seq_not_align)
+
+writeXStringSet(virus_seq_align, file="virus_seq_align.fasta")
+virus_aligned <- read.alignment("virus_seq_align.fasta", format = "fasta")
+matriz_distancia <- dist.alignment(virus_aligned, matrix = "similarity")
+temp <- as.data.frame(as.matrix(matriz_distancia))
+table.paint(temp, cleg=0, clabel.row=.5, clabel.col=.5) + scale_color_viridis()
+```
+### Arbol filogenetico:
+
+```{r}
+virus_tree <- nj(matriz_distancia)
+class(virus_tree) 
+
+virus_tree <- ladderize(virus_tree)
+plot(virus_tree, cex = 0.6)
+title("Virus del SARS-CoV-2 en otras especies de Animales")
+```
+
+
+
+En la gráfica se observa que para las secuencias del SARS-Cov-2 de las especies analizadas, apenas se puede notar una variación en la cantidad de Adenina, Guanina, Citocina y Timina, el genoma del virus del SARS-CoV-2 está compuesto por casi 30 000 nucleótidos, cantidad a la que se aproximan todas las secuencias analizadas. Se sabe que el agente causal, el síndrome respiratorio agudo severo coronavirus 2 (SARS-CoV-2) tiene una fuente zoonótica y, por lo tanto, la zoonosis inversa (transmisión de enfermedades de humanos a animales) aumenta el riesgo y la tasa de infección por SARS-CoV-2. Como observamos todas estas especies de distintas familias (Canis, Felis, Rodentia, hominidae, mustélidos, etc.) tienen susceptibilidad al virus y podemos decir también que son huéspedes intermedios y que son son capaces de transmitir el virus a los animales de la misma especie que viven en la misma zona o hábitat.
+
+Observando el árbol filogenético y la alineación de las secuencias, se puede sacar a un "ancestro" común que hospeda el virus, este es el visón europeo. Con la investigación realizada se sabe que hubo brotes de SARS-CoV-2 en explotaciones de visones de toda Europa, que tuvieron lugar en 2020 y que continuaron hasta el 2021 en otros países, también hubo un informe que muestra que los visones fueron infectados por SARS-CoV-2 en dos granjas peleteras en los Países Bajos y exhibieron síntomas respiratorios típicos. Un empleado en las fincas fue considerado la fuente de infección. Además, se ha informado que el SARS-CoV-2 puede transmitirse de los visones a los humanos, y los visones pueden servir como reservorio viral, lo que representa una amenaza potencial para la salud pública, dado el sistema de cría de visones que permite el contacto estrecho con otros animales tanto de la misma granja como otros animales que pudieran acercarse a las instalaciones, la entrada de este virus a una granja, supone un riesgo importante de propagación del virus.
+
+Con esto podemos sacar la hipótesis de que el virus pudo haberse propagado incluso entre animales que no son de la misma especie, y que la gama tan amplia de huéspedes puede deberse en gran parte a las altas tasas de mutación y los eventos de recombinación de los virus en la naturaleza a lo largo del tiempo, esto explicaría por qué el SARS-CoV-2 pudo haber aumentado a través de la selección natural en animales o humanos antes o después de cruzar la barrera de las especies. También es de destacar que los coronavirus han cruzado la barrera de las especies dos veces en el pasado durante los brotes de SARS y MERS y, por lo tanto, el SARS-CoV-2 parece ser el resultado del salto de la barrera de las especies por tercera vez.
+
+Se concluye que la aparición de nuevas infecciones zoonóticas como el SARS-CoV-2 es inevitable en el futuro, por eso debemos enfocarnos en analizar los coronavirus con potenciales zoonóticos, especialmente en aquellos en estrecha relación con los humanos, ya que esto nos permitirá prepararnos para tener medidas efectivas no solo contra el SARS-CoV-2 actual sino también contra otros coronavirus zoonóticos potenciales en el futuro. Así como también se debe regular el comercio de especies de animales salvajes en distintos países, por lo tanto, Las autoridades deben desarrollar e implementar mecanismos sólidos de control de enfermedades que disminuyan la posibilidad de exposición humana a los animales salvajes.
+
+
+
+## Video:
+https://youtu.be/uXFaWNMDiTc
+
+
+# Referencias
+1- Tiwari R, Dhama K, Sharun K, Iqbal Yatoo M, Malik YS, Singh R, Michalak I, Sah R, Bonilla-Aldana DK, Rodriguez-Morales AJ. COVID-19: animals, veterinary and zoonotic links. Vet Q. 2020 Dec;40(1):169-182. doi: 10.1080/01652176.2020.1766725. PMID: 32393111; PMCID: PMC7755411.https://pubmed.ncbi.nlm.nih.gov/32393111/
+
+2- Gautam A, Kaphle K, Shrestha B, Phuyal S. Susceptibility to SARS, MERS, and COVID-19 from animal health perspective. Open Vet J. 2020 Aug;10(2):164-177. doi: 10.4314/ovj.v10i2.6. Epub 2020 May 10. PMID: 32821661; PMCID: PMC7419072. https://pubmed.ncbi.nlm.nih.gov/32821661/
+
+3- SARS-CoV-2 en visones: recomendaciones para mejorar el seguimiento.https://www.comunidad.madrid/sites/default/files/doc/sanidad/samb/informe_covid_visones_23_04_2021.pdf
+
+
+
